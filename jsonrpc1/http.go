@@ -10,6 +10,7 @@ import (
 	"mime"
 	"net/http"
 	"net/rpc"
+	"strings"
 )
 
 const contentType = "application/json"
@@ -109,7 +110,7 @@ func (conn *httpClientConn) Read(buf []byte) (int, error) {
 		conn.body = <-conn.ready
 	}
 	n, err := conn.body.Read(buf)
-	if err == io.EOF {
+	if err == io.EOF || strings.Contains(string(buf), "result") {
 		conn.body.Close()
 		conn.body = nil
 		err = nil
@@ -134,7 +135,7 @@ func (conn *httpClientConn) Write(buf []byte) (int, error) {
 			if err != nil {
 			} else if resp.Header.Get("Content-Type") != contentType {
 				err = fmt.Errorf("bad HTTP Content-Type: %s", resp.Header.Get("Content-Type"))
-			} else if resp.StatusCode == http.StatusOK {
+			} else if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusInternalServerError {
 				conn.ready <- resp.Body
 				return
 			} else if resp.StatusCode == http.StatusNoContent || resp.StatusCode == http.StatusAccepted {

@@ -145,7 +145,7 @@ func (c *serverCodec) ReadRequestHeader(r *rpc.Request) (err error) {
 		c.encmutex.Unlock()
 		return err
 	}
-	
+
 	if len(raw) > 0 && raw[0] == '[' {
 		c.req.Method = "JSONRPC1.Batch"
 		c.req.Params = &raw

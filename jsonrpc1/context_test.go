@@ -15,14 +15,6 @@ import (
 
 type contextKey int
 
-type NameArg struct{ Fname, Lname string }
-type NameRes struct{ Name string }
-
-type NameArgContext struct {
-	Fname, Lname string
-	jsonrpc1.Ctx
-}
-
 var remoteAddrContextKey contextKey = 0
 
 // CtxSvc is an RPC service for testing.

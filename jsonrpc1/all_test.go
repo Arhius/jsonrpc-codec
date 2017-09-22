@@ -10,7 +10,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/Arhius/jsonrpc-codec/jsonrpc1"
 	"io"
 	"io/ioutil"
 	"net"
@@ -64,7 +63,7 @@ func init() {
 func TestServerNoParams(t *testing.T) {
 	cli, srv := net.Pipe()
 	defer cli.Close()
-	go jsonrpc1.ServeConn(srv)
+	go ServeConn(srv)
 	dec := json.NewDecoder(cli)
 
 	fmt.Fprintf(cli, `{"method": "Arith.Add", "id": "123"}`)
@@ -80,7 +79,7 @@ func TestServerNoParams(t *testing.T) {
 func TestServerEmptyMessage(t *testing.T) {
 	cli, srv := net.Pipe()
 	defer cli.Close()
-	go jsonrpc1.ServeConn(srv)
+	go ServeConn(srv)
 	dec := json.NewDecoder(cli)
 
 	fmt.Fprintf(cli, "{}")
@@ -96,7 +95,7 @@ func TestServerEmptyMessage(t *testing.T) {
 func TestServer(t *testing.T) {
 	cli, srv := net.Pipe()
 	defer cli.Close()
-	go jsonrpc1.ServeConn(srv)
+	go ServeConn(srv)
 	dec := json.NewDecoder(cli)
 
 	// Send hand-coded requests to server, parse responses.
@@ -123,9 +122,9 @@ func TestClient(t *testing.T) {
 	// Assume server is okay (TestServer is above).
 	// Test client against server.
 	cli, srv := net.Pipe()
-	go jsonrpc1.ServeConn(srv)
+	go ServeConn(srv)
 
-	client := jsonrpc1.NewClient(cli)
+	client := NewClient(cli)
 	defer client.Close()
 
 	// Synchronous calls
@@ -179,7 +178,7 @@ func TestClient(t *testing.T) {
 	// expect an error: zero divide
 	if err == nil {
 		t.Error("Div: expected error")
-	} else if jsonrpc1.ServerError(err).Message != "divide by zero" {
+	} else if ServerError(err).Message != "divide by zero" {
 		t.Error("Div: expected divide by zero error; got", err)
 	}
 }
@@ -190,7 +189,7 @@ func TestMalformedInput(t *testing.T) {
 		cli.Write([]byte(`{id:1}`)) // invalid json
 		cli.Read(make([]byte, 1024))
 	}()
-	jsonrpc1.ServeConn(srv) // must return, not loop
+	ServeConn(srv) // must return, not loop
 }
 
 func TestMalformedOutput(t *testing.T) {
@@ -198,7 +197,7 @@ func TestMalformedOutput(t *testing.T) {
 	go srv.Write([]byte(`{"id":0,"result":null,"error":null}`))
 	go ioutil.ReadAll(srv)
 
-	client := jsonrpc1.NewClient(cli)
+	client := NewClient(cli)
 	defer client.Close()
 
 	args := &Args{7, 8}
@@ -211,7 +210,7 @@ func TestMalformedOutput(t *testing.T) {
 
 func TestServerErrorHasNullResult(t *testing.T) {
 	var out bytes.Buffer
-	sc := jsonrpc1.NewServerCodec(struct {
+	sc := NewServerCodec(struct {
 		io.Reader
 		io.Writer
 		io.Closer
@@ -246,7 +245,7 @@ func TestUnexpectedError(t *testing.T) {
 	cli, srv := myPipe()
 	go cli.PipeWriter.CloseWithError(errors.New("unexpected error")) // reader will get this error
 	go cli.PipeReader.Close()                                        // writer will get ErrClosedPipe
-	jsonrpc1.ServeConn(srv)                                          // must return, not loop
+	ServeConn(srv)                                                   // must return, not loop
 }
 
 // Copied from package net.

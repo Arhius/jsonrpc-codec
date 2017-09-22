@@ -45,9 +45,9 @@ func newClientCodec(conn io.ReadWriteCloser) rpc.ClientCodec {
 }
 
 type clientRequest struct {
-	Method  string      `json:"method"`
-	Params  interface{} `json:"params,omitempty"`
-	ID      *uint64     `json:"id"`
+	Method string      `json:"method"`
+	Params interface{} `json:"params,omitempty"`
+	ID     *uint64     `json:"id"`
 }
 
 func (c *clientCodec) WriteRequest(r *rpc.Request, param interface{}) error {
@@ -104,9 +104,9 @@ func (c *clientCodec) WriteRequest(r *rpc.Request, param interface{}) error {
 }
 
 type clientResponse struct {
-	ID      *uint64          `json:"id"`
-	Result  *json.RawMessage `json:"result,omitempty"`
-	Error   *Error           `json:"error"`
+	ID     *uint64          `json:"id"`
+	Result *json.RawMessage `json:"result,omitempty"`
+	Error  *Error           `json:"error"`
 }
 
 func (r *clientResponse) reset() {
@@ -131,7 +131,7 @@ func (r *clientResponse) UnmarshalJSON(raw []byte) error {
 	_, okRes := o["result"]
 	err, okErr := o["error"]
 
-	if !okID || !okErr || !(okRes || (err != nil)) || len(o) > 3 {
+	if !okID || !okErr || !(okRes || (err != nil)) || (okRes && err != nil) || len(o) > 3 {
 		return errors.New("bad response: " + string(raw))
 	}
 
@@ -151,7 +151,7 @@ func (r *clientResponse) UnmarshalJSON(raw []byte) error {
 			return errors.New("bad response: " + string(raw))
 		}
 	}
-	
+
 	if o["id"] == nil && err == nil {
 		return errors.New("bad response: " + string(raw))
 	}
