@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"testing"
 
-	"jsonrpc1"
+	"github.com/Arhius/jsonrpc-codec/jsonrpc1"
 )
 
 type contextKey int
@@ -22,7 +22,6 @@ type NameArgContext struct {
 	Fname, Lname string
 	jsonrpc1.Ctx
 }
-
 
 var remoteAddrContextKey contextKey = 0
 
@@ -203,7 +202,7 @@ func TestContextBatch(t *testing.T) {
 	want := []map[string]interface{}{
 		{
 			"error": nil,
-			"id":      0.0,
+			"id":    0.0,
 			"result": map[string]interface{}{
 				"Name":           " ",
 				"TCPRemoteAddr":  "127.0.0.1",
@@ -212,7 +211,7 @@ func TestContextBatch(t *testing.T) {
 		},
 		{
 			"error": nil,
-			"id":      1.0,
+			"id":    1.0,
 			"result": map[string]interface{}{
 				"Name":           "First Last",
 				"TCPRemoteAddr":  "127.0.0.1",

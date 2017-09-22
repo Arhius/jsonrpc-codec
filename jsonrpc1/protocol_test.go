@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/Arhius/jsonrpc-codec/jsonrpc1"
 	"net"
 	"net/rpc"
 	"path/filepath"
@@ -13,7 +14,6 @@ import (
 	"sort"
 	"strings"
 	"testing"
-	"jsonrpc1"
 )
 
 var (

@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"net/rpc"
 
-	"jsonrpc1"
+	"github.com/Arhius/jsonrpc-codec/jsonrpc1"
 )
 
 // A server wishes to export an object of type ExampleSvc:
@@ -179,7 +179,7 @@ func Example() {
 
 	// // Synchronous call using named params and TCP with context.
 	clientTCP.Call("ExampleSvc.FullName2", NameArg{"First", "Last"}, nil)
-	
+
 	// Synchronous call using named params and HTTP with context.
 	clientHTTP.Call("ExampleSvc.FullName3", NameArg{"First", "Last"}, nil)
 

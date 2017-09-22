@@ -10,13 +10,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/Arhius/jsonrpc-codec/jsonrpc1"
 	"io"
 	"io/ioutil"
 	"net"
 	"net/rpc"
 	"strings"
 	"testing"
-	"jsonrpc1"
 )
 
 type Args struct {
@@ -246,7 +246,7 @@ func TestUnexpectedError(t *testing.T) {
 	cli, srv := myPipe()
 	go cli.PipeWriter.CloseWithError(errors.New("unexpected error")) // reader will get this error
 	go cli.PipeReader.Close()                                        // writer will get ErrClosedPipe
-	jsonrpc1.ServeConn(srv)                                                   // must return, not loop
+	jsonrpc1.ServeConn(srv)                                          // must return, not loop
 }
 
 // Copied from package net.

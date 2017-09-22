@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"jsonrpc1"
+	"github.com/Arhius/jsonrpc-codec/jsonrpc1"
 )
 
 // Svc is an RPC service for testing.

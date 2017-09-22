@@ -10,7 +10,7 @@ import (
 	"net/rpc/jsonrpc"
 	"testing"
 
-	"jsonrpc1"
+	"github.com/Arhius/jsonrpc-codec/jsonrpc1"
 )
 
 type client interface {
