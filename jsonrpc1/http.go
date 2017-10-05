@@ -10,7 +10,6 @@ import (
 	"mime"
 	"net/http"
 	"net/rpc"
-	"strings"
 )
 
 const contentType = "application/json"
